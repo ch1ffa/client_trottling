@@ -1,1 +1,0 @@
-export { getPhotos } from './loader';

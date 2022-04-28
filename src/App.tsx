@@ -1,40 +1,30 @@
-import { useState, type FC } from 'react'
-import { getPhotos } from './loader'
+import type { FC } from 'react'
+import { useLoader } from './hooks/useLoader';
 import './App.css'
 
+const MAX_RPS = 8;
+const MAX_PARALLEL_REQUESTS = 4;
+
 export const App: FC = () => {
-  const [imagesUrl, setImagesUrl] = useState<string[]>([]);
+  // Here we use id = 0 with 0.1 probability to test fetch error
+  const ids = new Array(100).fill(0).map(() => Math.random() > 0.1 ? Math.round(Math.random() * 5000) : 0);
 
-  const ids = new Array(100).fill(0).map(() => Math.round(Math.random() * 5000));
-
-  const loader = getPhotos(ids, 5);
-
-  const loadImages = async () => {
-    const data = await loader.next();
-    const images = data.value as string[];
-    if (images.length) {
-      setImagesUrl(state => [...state, ...images]);
-      return true;
-    }
-    return false;
-  }
-
-  const startLoading = async () => {
-    while (await loadImages()) {
-      await delay(3000);
-    }
-  }
+  const { data, runLoader } = useLoader(ids, MAX_PARALLEL_REQUESTS, MAX_RPS);
 
   return (
     <div className="App">
-      <button onClick={() => startLoading()}>Start</button>
+      <button onClick={() => runLoader()}>Start</button>
       <div className="Image-Container">
         {
-          imagesUrl.map((url, idx) => <img key={idx} src={url}/>)
+          data.map((url, idx) =>
+            <img 
+              key={idx}
+              src={url}
+              style={{ width: 150, height: 150 }}
+            />
+          )
         }
       </div>
     </div>
   )
 }
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

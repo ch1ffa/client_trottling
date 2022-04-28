@@ -1,0 +1,21 @@
+.App {
+  text-align: center;
+}
+
+button {
+  font-size: calc(10px + 2vmin);
+}
+
+.Image-Container {
+  justify-content: start;
+}
+
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+img {
+  margin: 2px;
+  animation: fadein 2s;
+}

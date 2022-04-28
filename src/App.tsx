@@ -13,7 +13,7 @@ export const App: FC = () => {
 
   return (
     <div className="App">
-      <button onClick={() => runLoader()}>Start</button>
+      <button onClick={() => runLoader()} disabled={data.length > 0}>Start</button>
       <div className="Image-Container">
         {
           data.map((url, idx) =>
